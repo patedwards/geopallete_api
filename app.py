@@ -12,7 +12,6 @@ from flask_cors import CORS
 from get_map import get_map_by_bbox
 
 app = Flask(__name__)
-CORS(app)
 
 def get_image(data, with_features=False):
     response = service.image(
