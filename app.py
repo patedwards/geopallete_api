@@ -93,7 +93,8 @@ def geopallete():
     print(data['bBoxes'])
     frequencies, colors = analyse_response_data(data)
     
-    response = jsonify({"colors": list(map(rgb2hex, colors)), "METHOD": "POST"})
+    response = jsonify({"colors": list(map(rgb2hex, colors))})
+    response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
     
