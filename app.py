@@ -69,22 +69,20 @@ def analyse_response_data(data):
         frequencies.append(len(pixels[(centroids == i)])/N)
     return frequencies, colors
 
-def build_preflight_response():
-    response = make_response()
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add('Access-Control-Allow-Headers', "*")
-    response.headers.add('Access-Control-Allow-Methods', "*")
-    return response
-
-def build_actual_response(response):
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
-
 @app.after_request
 def after_request(response):
   response.headers.add('Access-Control-Allow-Origin', '*')
   response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
   return response
+
+@app.route('/api/create_pallete',  methods=['OPTIONS'])
+def geopallete():
+    response = make_response()
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
+
 
 @app.route('/api/create_pallete',  methods=['POST'])
 def geopallete():
@@ -92,8 +90,8 @@ def geopallete():
     data = json.loads(request.data)
     print(data['bBoxes'])
     frequencies, colors = analyse_response_data(data)
-    
     response = jsonify({"colors": list(map(rgb2hex, colors))})
+    response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
     
