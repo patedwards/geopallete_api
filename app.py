@@ -82,14 +82,14 @@ def build_actual_response(response):
 
 @app.route('/', methods=['POST', 'GET','OPTIONS'])
 def geopallete():
-    if request.method == 'OPTIONS': 
+    if request.method in ['OPTIONS', 'GET']: 
         return build_preflight_response()
     print("Method = ", request.method, "!")
     data = json.loads(request.data)
     print(data['bBoxes'])
     frequencies, colors = analyse_response_data(data)
     response = jsonify({"colors": list(map(rgb2hex, colors))})
-    #response = build_actual_response(response)
+    response = build_actual_response(response)
     return response
 
     
