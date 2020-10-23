@@ -16,6 +16,7 @@ app = Flask(__name__)
 #cors = CORS(app)
 #app.config['CORS_ORIGINS'] = ['https://master.d1wa48d6nu15eb.amplifyapp.com/']
 #app.config['CORS_HEADERS'] = ['Content-Type']
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 def get_image(data, with_features=False):
