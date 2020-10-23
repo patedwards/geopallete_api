@@ -11,7 +11,7 @@ from PIL import Image
 from io import BytesIO
 from get_map import get_map_by_bbox
 
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 #CORS(app, resources=r'/api/*', allow_headers='Content-Type')
 #app.config['CORS_ORIGINS'] = ['https://master.d1wa48d6nu15eb.amplifyapp.com/']
@@ -76,22 +76,27 @@ def analyse_response_data(data):
 # return response
 
 @app.route('/api/create_pallete',  methods=['OPTIONS'])
+@cross_origin(headers=["Content-Type"]) 
 def preflight():
     response = make_response()
+    response.headers.add('Content-Type', 'application/json')
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     response.headers.add('Access-Control-Allow-Methods', "*")
+    print("OPTIONS", response.headers)
     return response
 
 # CORS header ‘Access-Control-Allow-Origin
 @app.route('/api/create_pallete',  methods=['POST'])
+@cross_origin(headers=["Content-Type"]) 
 def geopallete():
     print("Method = ", request.method, "!")
     data = json.loads(request.data)
     print(data['bBoxes'])
     frequencies, colors = analyse_response_data(data)
     response = jsonify({"colors": list(map(rgb2hex, colors))})
-    response.headers.add("Access-Control-Allow-Origin", "*")
+    #response.headers.add("Access-Control-Allow-Origin", "*")
+    print("POST", response.headers)
     return response
 
     
