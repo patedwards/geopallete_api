@@ -88,6 +88,10 @@ def after_request(response):
 
 @app.route('/',  methods=['GET', 'POST', 'OPTIONS'])
 def geopallete():
+    if request.method != "POST":
+        response = make_response()
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        return response 
     print("Method = ", request.method, "!")
     data = json.loads(request.data)
     print(data['bBoxes'])
