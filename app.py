@@ -13,7 +13,7 @@ from get_map import get_map_by_bbox
 
 from flask_cors import CORS
 app = Flask(__name__)
-CORS(app, resources=r'/api/*', allow_headers='Content-Type')
+#CORS(app, resources=r'/api/*', allow_headers='Content-Type')
 #app.config['CORS_ORIGINS'] = ['https://master.d1wa48d6nu15eb.amplifyapp.com/']
 #app.config['CORS_HEADERS'] = ['Content-Type']
 #app.config['CORS_HEADERS'] = 'Content-Type'
@@ -69,21 +69,21 @@ def analyse_response_data(data):
         frequencies.append(len(pixels[(centroids == i)])/N)
     return frequencies, colors
 
-@app.after_request
-def after_request(response):
-  response.headers.add('Access-Control-Allow-Origin', '*')
-  response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
-  return response
+#@app.after_request
+#def after_request(response):
+#  response.headers.add('Access-Control-Allow-Origin', '*')
+# response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+# return response
 
 @app.route('/api/create_pallete',  methods=['OPTIONS'])
-def geopallete():
+def preflight():
     response = make_response()
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     response.headers.add('Access-Control-Allow-Methods', "*")
     return response
 
-
+# CORS header ‘Access-Control-Allow-Origin
 @app.route('/api/create_pallete',  methods=['POST'])
 def geopallete():
     print("Method = ", request.method, "!")
