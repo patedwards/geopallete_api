@@ -7,8 +7,6 @@ import numpy as np
 from matplotlib.colors import rgb_to_hsv
 from PIL import Image  
 from io import BytesIO
-from flask_cors import CORS
-
 from get_map import get_map_by_bbox
 
 from flask_cors import CORS, cross_origin
