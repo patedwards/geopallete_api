@@ -67,14 +67,14 @@ def analyse_response_data(data):
     return frequencies, colors
 
     
-@app.route('/geopallete', methods=['POST'])
+@app.route('/geopallete', methods=['GET', 'POST'])
 @cross_origin()
 def geopallete():
     data = json.loads(request.data)
     print(data['bBoxes'])
     frequencies, colors = analyse_response_data(data)
     response = jsonify({"colors": list(map(rgb2hex, colors))})
-    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
     
