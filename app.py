@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request, jsonify, make_response
+from flask import Flask, request, jsonify
 import os
 from numpy import round
 from sklearn.cluster import KMeans
@@ -9,13 +9,10 @@ from PIL import Image
 from io import BytesIO
 from get_map import get_map_by_bbox
 
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
-#app.config['CORS_HEADERS'] = 'Content-Type'
-#CORS(app, resources={r"/*": {"origins": "*"}})
-#cors = CORS(app)
+
 
 
 
@@ -80,16 +77,21 @@ def build_actual_response(response):
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
-@app.route('/', methods=['POST', 'GET','OPTIONS'])
+@app.after_request
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  return response
+
+@app.route('/', methods=['POST', 'GET'])
 def geopallete():
-    if request.method in ['OPTIONS', 'GET']: 
-        return build_preflight_response()
     print("Method = ", request.method, "!")
     data = json.loads(request.data)
     print(data['bBoxes'])
     frequencies, colors = analyse_response_data(data)
+    
     response = jsonify({"colors": list(map(rgb2hex, colors))})
-    response = build_actual_response(response)
     return response
 
     
