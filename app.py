@@ -13,7 +13,7 @@ from get_map import get_map_by_bbox
 
 from flask_cors import CORS, cross_origin
 app = Flask(__name__)
-CORS(app, resources=r'/api/*', allow_headers='Content-Type')
+CORS(app)
 #app.config['CORS_ORIGINS'] = ['https://master.d1wa48d6nu15eb.amplifyapp.com/']
 #app.config['CORS_HEADERS'] = ['Content-Type']
 #app.config['CORS_HEADERS'] = 'Content-Type'
