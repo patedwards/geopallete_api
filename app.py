@@ -13,10 +13,10 @@ from get_map import get_map_by_bbox
 
 from flask_cors import CORS
 app = Flask(__name__)
-cors = CORS(app)
+CORS(app, resources=r'/api/*', allow_headers='Content-Type')
 #app.config['CORS_ORIGINS'] = ['https://master.d1wa48d6nu15eb.amplifyapp.com/']
 #app.config['CORS_HEADERS'] = ['Content-Type']
-app.config['CORS_HEADERS'] = 'Content-Type'
+#app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 def get_image(data, with_features=False):
@@ -86,7 +86,7 @@ def after_request(response):
   response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
   return response
 
-@app.route('/',  methods=['GET', 'POST'])
+@app.route('/api/create_pallete',  methods=['POST'])
 def geopallete():
     print("Method = ", request.method, "!")
     data = json.loads(request.data)
