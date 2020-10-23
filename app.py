@@ -14,6 +14,8 @@ from get_map import get_map_by_bbox
 from flask_cors import CORS
 app = Flask(__name__)
 cors = CORS(app)
+app.config['CORS_ORIGINS'] = ['https://master.d1wa48d6nu15eb.amplifyapp.com/']
+app.config['CORS_HEADERS'] = ['Content-Type']
 
 
 def get_image(data, with_features=False):
