@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 import os
 from numpy import round
 from sklearn.cluster import KMeans
@@ -67,17 +67,27 @@ def analyse_response_data(data):
         frequencies.append(len(pixels[(centroids == i)])/N)
     return frequencies, colors
 
-    
+def build_preflight_response():
+    response = make_response()
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
+    response.headers.add('Access-Control-Allow-Methods', "*")
+    return response
+
+def build_actual_response(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
 @app.route('/geopallete', methods=['POST', 'GET','OPTIONS'])
-@cross_origin(supports_credentials=True)
 def geopallete():
+    if request.method == 'OPTIONS': 
+        return build_preflight_response()
     print("Method = ", request.method, "!")
     data = json.loads(request.data)
     print(data['bBoxes'])
     frequencies, colors = analyse_response_data(data)
     response = jsonify({"colors": list(map(rgb2hex, colors))})
-    #response.headers.add('Access-Control-Allow-Origin', '*')
-    return response
+    return build_actual_response(response)
 
     
 if __name__ == "__main__":
