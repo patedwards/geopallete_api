@@ -82,23 +82,17 @@ def build_actual_response(response):
 @app.after_request
 def after_request(response):
   response.headers.add('Access-Control-Allow-Origin', '*')
-  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
   return response
 
 @app.route('/',  methods=['GET', 'POST', 'OPTIONS'])
 def geopallete():
-    if request.method != "POST":
-        response = make_response()
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        return response 
     print("Method = ", request.method, "!")
     data = json.loads(request.data)
     print(data['bBoxes'])
     frequencies, colors = analyse_response_data(data)
     
     response = jsonify({"colors": list(map(rgb2hex, colors))})
-    response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
     
