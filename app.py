@@ -11,7 +11,11 @@ from flask_cors import CORS
 
 from get_map import get_map_by_bbox
 
+from flask_cors import CORS, cross_origin
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 def get_image(data, with_features=False):
     response = service.image(
@@ -65,6 +69,7 @@ def analyse_response_data(data):
 
     
 @app.route('/geopallete', methods=['GET', 'POST'])
+@cross_origin()
 def geopallete():
     data = json.loads(request.data)
     print(data['bBoxes'])
