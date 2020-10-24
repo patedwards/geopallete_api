@@ -75,7 +75,7 @@ def analyse_response_data(data):
 # response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
 # return response
 
-@app.route('/api/create_pallete',  methods=['OPTIONS'])
+@app.route('/api/create_pallete',  methods=['GET', 'OPTIONS'])
 @cross_origin(headers=["Content-Type"]) 
 def preflight():
     response = make_response()
@@ -84,6 +84,7 @@ def preflight():
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
     response.headers.add('Access-Control-Allow-Methods', "*")
     print("OPTIONS", response.headers)
+    import pdb; pdb.set_trace()
     return response
 
 # CORS header ‘Access-Control-Allow-Origin
@@ -91,6 +92,7 @@ def preflight():
 @cross_origin(headers=["Content-Type"]) 
 def geopallete():
     print("Method = ", request.method, "!")
+    import pdb; pdb.set_trace()
     data = json.loads(request.data)
     print(data['bBoxes'])
     frequencies, colors = analyse_response_data(data)
