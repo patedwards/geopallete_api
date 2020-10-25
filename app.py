@@ -82,17 +82,13 @@ def _corsify_actual_response(response):
 def geopallete():
     if request.method == "OPTIONS": # CORS preflight
         response = _build_cors_prelight_response()
-        logging.info("OPTIONS", response.headers)
-        import pdb; pdb.set_trace()
         return response
     elif request.method == "POST": # The actual request following the preflight
         data = json.loads(request.data)
         print(data['bBoxes'])
         frequencies, colors = analyse_response_data(data)
         response = jsonify({"colors": list(map(rgb2hex, colors))})
-        logging.info("POST",response)
-        import pdb; pdb.set_trace()
-        return _corsify_actual_response(response.headers)
+        return _corsify_actual_response(response)
     else:
         raise RuntimeError("Weird - don't know how to handle method {}".format(request.method))
     

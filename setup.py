@@ -10,6 +10,7 @@ setup(
         "matplotlib",
         "pillow",
         "flask_cors",
-        "pyopenssl"
+        "pyopenssl",
+        "gunicorn"
     ],
 )
