@@ -12,12 +12,8 @@ from io import BytesIO
 from get_map import get_map_by_bbox
 
 from flask_cors import CORS, cross_origin
-app = Flask(__name__)
-CORS(app)
-#app.config['CORS_ORIGINS'] = ['https://master.d1wa48d6nu15eb.amplifyapp.com/']
-#app.config['CORS_HEADERS'] = ['Content-Type']
-#app.config['CORS_HEADERS'] = 'Content-Type'
 
+app = Flask(__name__)
 
 def get_image(data, with_features=False):
     response = service.image(
@@ -69,37 +65,31 @@ def analyse_response_data(data):
         frequencies.append(len(pixels[(centroids == i)])/N)
     return frequencies, colors
 
-#@app.after_request
-#def after_request(response):
-#  response.headers.add('Access-Control-Allow-Origin', '*')
-# response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
-# return response
 
-@app.route('/api/create_pallete',  methods=['GET', 'OPTIONS'])
-@cross_origin(headers=["Content-Type"]) 
-def preflight():
+def _build_cors_prelight_response():
     response = make_response()
-    response.headers.add('Content-Type', 'application/json')
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add('Access-Control-Allow-Headers', "*")
     response.headers.add('Access-Control-Allow-Methods', "*")
-    print("OPTIONS", response.headers)
-    #import pdb; pdb.set_trace()
     return response
 
-# CORS header ‘Access-Control-Allow-Origin
-@app.route('/api/create_pallete',  methods=['POST'])
-@cross_origin(headers=["Content-Type"]) 
-def geopallete():
-    print("Method = ", request.method, "!")
-    #import pdb; pdb.set_trace()
-    data = json.loads(request.data)
-    print(data['bBoxes'])
-    frequencies, colors = analyse_response_data(data)
-    response = jsonify({"colors": list(map(rgb2hex, colors))})
-    response.headers.add("Access-Control-Allow-Origin", "*") # fails locally
-    print("POST", response.headers)
+def _corsify_actual_response(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
     return response
+
+@app.route("/api/create_pallete", methods=["POST", "OPTIONS"])
+def geopallete():
+    if request.method == "OPTIONS": # CORS preflight
+        return _build_cors_prelight_response()
+    elif request.method == "POST": # The actual request following the preflight
+        data = json.loads(request.data)
+        print(data['bBoxes'])
+        frequencies, colors = analyse_response_data(data)
+        response = jsonify({"colors": list(map(rgb2hex, colors))})
+        return _corsify_actual_response(response)
+    else:
+        raise RuntimeError("Weird - don't know how to handle method {}".format(request.method))
+    
 
     
 if __name__ == "__main__":
