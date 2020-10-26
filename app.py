@@ -1,5 +1,5 @@
 import json
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 import os
 from numpy import round
 from sklearn.cluster import KMeans
@@ -66,8 +66,10 @@ def analyse_response_data(data):
     return frequencies, colors
 
     
-@app.route('/geopallete', methods=['GET', 'POST'])
+@app.route('/geopallete', methods=['GET', 'POST', 'OPTIONS'])
 def geopallete():
+    if request.method != "POST":
+        return make_response()
     data = json.loads(request.data)
     print(data['bBoxes'])
     t0 = time.time()
@@ -78,4 +80,4 @@ def geopallete():
 
     
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=8000)
