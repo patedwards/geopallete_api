@@ -44,7 +44,10 @@ def rgb2hex(color):
     return f"#{''.join(f'{hex(int(round(c*255)))[2:].upper():0>2}' for c in color)}"
     
 def analyse_response_data(data):
+    t0 = time.time()
     im = get_map_by_bbox(data['bBoxes'][0])
+    w, h = [im.width, im.height]
+    im = im.resize((int(np.floor(w/10)), int(np.floor(h/10))))
     im_array = np.array(im)/255
     w, h, d = im_array.shape
     pixels = im_array.reshape((w*h, d))
@@ -52,7 +55,10 @@ def analyse_response_data(data):
 
     n_clusters = 10
 
+    
+    print(len(pixels))
     centroids = KMeans(n_clusters=n_clusters).fit_predict(pixels)
+    t1 = time.time(); print("After fitting", t1-t0)
 
     colors = []
     frequencies = []
