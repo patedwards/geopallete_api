@@ -1,7 +1,5 @@
 import json
-from flask import Flask, request, jsonify, make_response, current_app
-from datetime import timedelta
-from functools import update_wrapper
+from flask import Flask, request, jsonify
 import os
 from numpy import round
 from sklearn.cluster import KMeans
@@ -9,12 +7,13 @@ import numpy as np
 from matplotlib.colors import rgb_to_hsv
 from PIL import Image  
 from io import BytesIO
-from get_map import get_map_by_bbox
-import logging
+from flask_cors import CORS
+import time
 
-from flask_cors import CORS, cross_origin
+from get_map import get_map_by_bbox
 
 app = Flask(__name__)
+CORS(app)
 
 def get_image(data, with_features=False):
     response = service.image(
@@ -66,32 +65,16 @@ def analyse_response_data(data):
         frequencies.append(len(pixels[(centroids == i)])/N)
     return frequencies, colors
 
-
-def _build_cors_prelight_response():
-    response = make_response()
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add('Access-Control-Allow-Headers', "*")
-    response.headers.add('Access-Control-Allow-Methods', "*")
-    return response
-
-def _corsify_actual_response(response):
-    response.headers.add("Access-Control-Allow-Origin", "*")
-    return response
-
-@app.route("/api/create_pallete", methods=["POST", "OPTIONS"])
-def geopallete():
-    if request.method == "OPTIONS": # CORS preflight
-        response = _build_cors_prelight_response()
-        return response
-    elif request.method == "POST": # The actual request following the preflight
-        data = json.loads(request.data)
-        print(data['bBoxes'])
-        frequencies, colors = analyse_response_data(data)
-        response = jsonify({"colors": list(map(rgb2hex, colors))})
-        return _corsify_actual_response(response)
-    else:
-        raise RuntimeError("Weird - don't know how to handle method {}".format(request.method))
     
+@app.route('/geopallete', methods=['GET', 'POST'])
+def geopallete():
+    data = json.loads(request.data)
+    print(data['bBoxes'])
+    t0 = time.time()
+    frequencies, colors = analyse_response_data(data)
+    t1 = time.time()
+    print("Took", t1-t0)
+    return jsonify({"colors": list(map(rgb2hex, colors))})
 
     
 if __name__ == "__main__":
