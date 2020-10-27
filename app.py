@@ -53,7 +53,7 @@ def analyse_response_data(data):
     pixels = im_array.reshape((w*h, d))
     N = w*h
 
-    n_clusters = 10
+    n_clusters = data['k']
 
     
     print(len(pixels))
@@ -86,4 +86,4 @@ def geopallete():
 
     
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=8080, ssl_context=('cert.pem', 'key.pem'))
