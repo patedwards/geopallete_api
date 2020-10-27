@@ -1,1 +1,1 @@
-docker build -t geopallete-flask-app .
+docker build -t palettemap-flask-app .
