@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name="geopallete",
+    name="palettemap",
     version="0.1",
     install_requires=[
         "flask",

@@ -53,7 +53,7 @@ def analyse_response_data(data):
     pixels = im_array.reshape((w*h, d))
     N = w*h
 
-    n_clusters = data['k']
+    n_clusters = int(data['k'])
 
     
     print(len(pixels))
@@ -72,12 +72,12 @@ def analyse_response_data(data):
     return frequencies, colors
 
     
-@app.route('/geopallete', methods=['GET', 'POST', 'OPTIONS'])
-def geopallete():
+@app.route('/palettemap', methods=['GET', 'POST', 'OPTIONS'])
+def palettemap():
     if request.method != "POST":
         return make_response()
     data = json.loads(request.data)
-    print(data['bBoxes'])
+    print(data)
     t0 = time.time()
     frequencies, colors = analyse_response_data(data)
     t1 = time.time()
